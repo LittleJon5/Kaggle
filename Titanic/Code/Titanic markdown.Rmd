@@ -12,6 +12,7 @@ In this document we'll explore various methods to binary classification.
 require(tidyverse)
 require(caret)
 require(anytime)
+require(memisc)
 
 ```
 
@@ -23,17 +24,80 @@ titanic <- read_csv("C:\\Users\\Jon Nelson\\Documents\\GIT\\Kaggle\\Titanic\\Dat
 
 ```{r deck}
 
-titanic$Deck <- titanic$Cabin %>% substr(., 1, 1)
+titanic$Deck <- titanic$Cabin %>% substr(., 1, 1) %>% factor(exclude = NULL)
 
 ```
 
 ```{r title}
 
-titanic$Title <- titanic$Name %>% str_extract(., pattern = "[:alpha:]+\\.") 
+titanic$Title <- titanic$Name %>% str_extract(., pattern = "[:alpha:]+\\.") %>% as.factor()
 
 ```
 
+```{r surved as factr}
+titanic$Survived <- titanic$Survived %>% as.factor()
 
+titanic$Pclass <- titanic$Pclass %>% as.factor()
+```
+
+```{r}
+titanic$AgeRange <- NA
+
+ageBreaks <- seq(from = 0, to = 80, length.out = 16)
+
+for(i in 1:(ageBreaks %>% length - 1)){
+    titanic$AgeRange[titanic$Age >= ageBreaks[i] & titanic$Age <= ageBreaks[i+1]] <- str_c(ageBreaks[i], " to ", ageBreaks[i+1])
+}
+```
+
+
+
+
+## Visual Exploration of columns
+
+### Survival rate
+
+```{r}
+ggplot(data = titanic, aes(x = Survived, fill = Survived)) +
+  geom_bar() +
+  geom_text(stat = "count", aes(label =((..count.. / nrow(titanic)) %>% round(digits = 2)), vjust = 2))
+
+```
+
+### Sex 
+
+```{r sex count}
+
+ggplot(data = titanic, aes(x = Sex, fill = Sex)) +
+  geom_bar()
+
+```
+
+### Passenger Class
+
+```{r}
+ggplot(data = titanic, aes(x = Pclass, fill = Pclass)) +
+  geom_bar()
+```
+
+
+
+
+```{r}
+
+ggplot(data = titanic, aes(x = Title, fill = Survived)) +
+  geom_bar() +
+  theme(axis.text.x = element_text(angle = -45))
+
+```
+
+```{r}
+
+ggplot(data = titanic, aes(x = Title, fill = Survived)) +
+  geom_bar(position = "fill") +
+  theme(axis.text.x = element_text(angle = -45))
+
+```
  
 
 
