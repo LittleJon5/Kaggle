@@ -1,0 +1,40 @@
+---
+title: "Titanic Investigation"
+output: html_document
+---
+
+# Titanic Markdown
+
+In this document we'll explore various methods to binary classification. 
+
+```{r installing packages, echo = FALSE, include=FALSE}
+
+require(tidyverse)
+require(caret)
+require(anytime)
+
+```
+
+```{r loading data, echo=FALSE}
+titanic <- read_csv("C:\\Users\\Jon Nelson\\Documents\\GIT\\Kaggle\\Titanic\\Data\\train.csv")
+```
+
+## Finding More data
+
+```{r deck}
+
+titanic$Deck <- titanic$Cabin %>% substr(., 1, 1)
+
+```
+
+```{r title}
+
+titanic$Title <- titanic$Name %>% str_extract(., pattern = "[:alpha:]+\\.") 
+
+```
+
+
+ 
+
+
+
